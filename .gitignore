@@ -1,0 +1,17 @@
+# Ignore virtual environment
+rssi_env/
+
+# Ignore raw data and captures
+*.pcap
+*.csv
+data/
+captures/
+
+# Ignore Jupyter notebook checkpoints
+.ipynb_checkpoints/
+
+# OS / Editor clutter
+__pycache__/
+*.log
+.DS_Store
+
