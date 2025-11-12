@@ -2,8 +2,8 @@
 #include <WiFi.h>
 
 
-const char * ssid = "ESP_Beacon_one";
-const char * password = "HelloTest1";
+const char * ssid = "ESP_Beacon_two"; //change according to the ESP
+const char * password = "HelloTest2";
 
 
 
@@ -12,7 +12,7 @@ void setup() {
 
   // Start the ESP32 in Access Point mode
   WiFi.mode(WIFI_AP);
-  bool result = WiFi.softAP(ssid, password);
+  bool result = WiFi.softAP(ssid, password,1); // start the AP on channel 1 no channel hoppin
 
   if (result) {
     Serial.println("Access Point started successfully!");
@@ -26,6 +26,6 @@ void setup() {
 }
 
 void loop() {
-  // Nothing required — ESP32 automatically sends beacons periodically
-  delay(1000);
+  // ESP32 automatically sends beacons periodically
+  delay(500);
 }
