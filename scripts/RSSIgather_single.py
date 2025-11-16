@@ -3,6 +3,7 @@ import os
 import time
 import keyboard
 import numpy as np
+import csv
 
 
 APs = ["ESP_Beacon_one", "ESP_Beacon_two", "ESP_Beacon_three"]
@@ -24,6 +25,21 @@ Y = 0
 #store the signal strength values -> make sure to convert into linear before adding them into the list 
 #These arrays need to be cleared before the beacon_parse returns to get them ready for the next run 
 ESP_1 = []
+
+
+
+def write_dataset(AP):
+    csv_header = ['SSID', "X", "Y", "RSSI (avg)"]
+
+    csv_name = f"{APs[AP]}_dataset.csv"
+    csvfile = open(csv_name, 'w', newline='')
+
+    csv_writer = csv.writer(csvfile)
+
+    csv_writer.writerow(csv_header)
+
+    return csv_writer
+
 
 
 def average_RSSI(values):
@@ -79,6 +95,8 @@ if __name__ == "__main__":
 
     selector = int(input("Select ESP:\n0:ESP1\n1:ESP2\n2:ESP3\n"))
 
+    
+
 
     
 
@@ -108,7 +126,8 @@ if __name__ == "__main__":
 
 
                 print(f"Starting sniff at ({X},{Y})")    
-                sniff(iface=wlan, prn=beacon_parse, store=0, filter="type mgt subtype beacon", stop_filter = stop_sniff, timeout = 10)
+                sniff(iface=wlan, prn=beacon_parse, store=0, 
+                      filter="type mgt subtype beacon", stop_filter = stop_sniff, timeout = 10)
 
                 ESP1_avg = 10 * np.log10(average_RSSI(ESP_1))
 
