@@ -140,6 +140,8 @@ if __name__ == "__main__":
 
                 print(f"RSSI at ({X},{Y}) for {APs[selector]}: {ESP1_avg:.2f} dBm")
 
+
+
                 writer.writerow([APs[selector], X, Y, ESP1_avg ])
 
 
