@@ -4,6 +4,8 @@ import time
 import keyboard
 import numpy as np
 import csv
+from pathlib import Path
+from datetime import datetime
 
 
 APs = ["ESP_Beacon_one", "ESP_Beacon_two", "ESP_Beacon_three"]
@@ -31,14 +33,17 @@ ESP_1 = []
 def write_dataset(AP):
     csv_header = ['SSID', "X", "Y", "RSSI (avg)"]
 
-    csv_name = f"{APs[AP]}_dataset.csv"
+    timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+
+    csv_name = Path("/home/tmshah") / "RSSI_Localization" / "RSSI-Based-Localization" / "data" / f"{APs[AP]}_{timestamp}_dataset.csv"
+
     csvfile = open(csv_name, 'w', newline='')
 
     csv_writer = csv.writer(csvfile)
 
     csv_writer.writerow(csv_header)
 
-    return csv_writer
+    return csvfile
 
 
 
@@ -95,7 +100,8 @@ if __name__ == "__main__":
 
     selector = int(input("Select ESP:\n0:ESP1\n1:ESP2\n2:ESP3\n"))
 
-    
+    file = write_dataset(selector)
+    writer = csv.writer(file)
 
 
     
@@ -134,8 +140,12 @@ if __name__ == "__main__":
 
                 print(f"RSSI at ({X},{Y}) for {APs[selector]}: {ESP1_avg:.2f} dBm")
 
+                writer.writerow([APs[selector], X, Y, ESP1_avg ])
+
+
 
             if key.name == 'esc':
+                file.close()
                 exit(0)
 
     #sniff(iface=wlan, prn=beacon_parse, store=0, filter="type mgt subtype beacon")
