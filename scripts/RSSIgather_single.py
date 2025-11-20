@@ -133,7 +133,7 @@ if __name__ == "__main__":
 
                 print(f"Starting sniff at ({X},{Y})")    
                 sniff(iface=wlan, prn=beacon_parse, store=0, 
-                      filter="type mgt subtype beacon", stop_filter = stop_sniff, timeout = 10)
+                      filter="type mgt subtype beacon", stop_filter = stop_sniff)
 
                 ESP1_avg = 10 * np.log10(average_RSSI(ESP_1))
 

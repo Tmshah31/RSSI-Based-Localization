@@ -89,9 +89,9 @@ def write_dataset(AP):
 
     timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
 
-    csv_name = Path("/home/tmshah") / "RSSI_Localization" / "RSSI-Based-Localization" / "data" / f"{APs[AP]}_{timestamp}_dataset.csv"
+    csv_name = Path("/home/tmshah") / "RSSI_Localization" / "RSSI-Based-Localization" / "data" / "Nov20" /f"{APs[AP]}_{timestamp}_dataset.csv"
 
-    csvfile = open(csv_name, 'w', newline='')
+    csvfile = open(csv_name, 'w', newline='') 
 
     csv_writer = csv.writer(csvfile)
 
