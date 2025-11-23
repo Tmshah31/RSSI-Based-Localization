@@ -3,8 +3,6 @@ rssi_env/
 
 # Ignore raw data and captures
 *.pcap
-*.csv
-data/
 captures/
 
 # Ignore Jupyter notebook checkpoints
