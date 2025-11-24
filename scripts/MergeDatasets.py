@@ -20,7 +20,7 @@ def Merge_Datasets():
 
     merged = merged[["X", "Y", "RSSI_AP1", "RSSI_AP2", "RSSI_AP3"]]
 
-    merged.to_csv("/home/tmshah/RSSI_Localization/RSSI-Based-Localization/data/")
+    merged.to_csv("/home/tmshah/RSSI_Localization/RSSI-Based-Localization/data/MergedDataset.csv")
 
 if __name__ == "__main__":
     Merge_Datasets()
