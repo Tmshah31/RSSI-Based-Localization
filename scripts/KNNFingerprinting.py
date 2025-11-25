@@ -23,11 +23,11 @@ x = data[["RSSI_AP1", "RSSI_AP2"]].values
 
 
 
-# # # classify Y -> labels 
+# classify Y -> labels 
 y = data[["X", "Y"]].values
 
 
-# # #split current dataset into training and test (Record new values for test?)
+# split current dataset into training and test (Record new values for test?)
 x_train, x_test, y_train, y_test = train_test_split(x,y, test_size = 0.20, random_state=2)
 
 
@@ -63,18 +63,14 @@ class KNN_RSSI:
 
         d = distances[nearest_indices]
 
+
+        # compute the weights per the APs
         weights = 1 / (d + 1e-6)
 
         predicted = np.sum(coordinates * weights[:,None], axis = 0) / np.sum(weights)
 
         return predicted
 
-
-        # labels = np.array([self.y_train[i] for i in nearest_indeces])
-
-        # compute = labels.mean(axis = 0)
-
-        # return compute
 
 
 
