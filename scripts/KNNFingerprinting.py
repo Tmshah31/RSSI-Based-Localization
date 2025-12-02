@@ -4,6 +4,7 @@ from collections import Counter
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D
 
 
 #load dataset
@@ -76,6 +77,7 @@ class KNN_RSSI:
     
 
     def error_print(self, errors):
+        print(f"----------K={self.k}----------")
         print(f"Mean error:{np.mean(errors)*0.2921} m")
         print(f"Median error:{np.median(errors)*0.2921} m")
         print(f"80% Percentile: {np.percentile(errors, 80)*0.2921} m")
@@ -95,22 +97,26 @@ class KNN_RSSI:
         pred_xy = self.predictor(test_rssi)
 
         # Plot RSSI Feature Space
-        plt.figure(figsize=(7, 6))
-        plt.scatter(x_train[:, 0], x_train[:, 1], alpha=0.5, label="Training Data")
+        fig = plt.figure(figsize=(8, 7))
+        ax = fig.add_subplot(111, projection = '3d')
+
+
+        ax.scatter(x_train[:, 0], x_train[:, 1], x_train[:,2], alpha=0.5, label="Training Data")
 
         # Neighbors circled
-        plt.scatter(x_train[n_idx, 0], x_train[n_idx, 1],
+        ax.scatter(x_train[n_idx, 0], x_train[n_idx, 1], x_train[n_idx, 2],
                     edgecolors="green", facecolors="none", s=200, linewidths=2,
                     label="Nearest Neighbors")
 
         # Test RSSI
-        plt.scatter(test_rssi[0], test_rssi[1], color="red", s=120, label="Test RSSI")
+        ax.scatter(test_rssi[0], test_rssi[1], test_rssi[2], color="red", s=120, label="Test RSSI")
 
-        plt.xlabel("RSSI_AP1 (dBm)")
-        plt.ylabel("RSSI_AP2 (dBm)")
-        plt.title("AP1 vs AP2")
-        plt.legend()
-        plt.grid(True)
+        ax.set_xlabel("RSSI_AP1 (dBm)")
+        ax.set_ylabel("RSSI_AP2 (dBm)")
+        ax.set_zlabel("RSSI_AP3 (dBm)")
+        ax.set_title("AP1 vs AP2")
+        ax.legend()
+        ax.grid(True)
         plt.show()
 
         print("Neighbor Visualization:")
@@ -140,6 +146,7 @@ if __name__ == "__main__":
 
     #visualize predicted and actual
     plt.figure(figsize = (6,6))
+    plt.title("Actual vs Predicted Coordinated (K=7)")
     plt.scatter(y_test[:,0], y_test[:,1], label = "Actual", alpha = 0.8)
     plt.scatter(prediction[:,0], prediction[:,1], label = "Predicted", alpha = 0.8)
     plt.xlabel("X Coord")
@@ -148,6 +155,6 @@ if __name__ == "__main__":
     plt.grid(True)
     plt.show()
 
-    knn.visualize_neighbors(x_train, y_train, x_test, y_test)
+    # knn.visualize_neighbors(x_train, y_train, x_test, y_test)
 
 
