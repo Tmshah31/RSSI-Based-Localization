@@ -18,7 +18,7 @@ data["RSSI_AP3"] = pd.to_numeric(data["RSSI_AP3"], errors="coerce")
 
 
 # classify X -> parameters
-# Normalize all RSSI values so every AP can be used
+# z-score normalize all RSSI values so every AP can be used
 scaler = StandardScaler()
 x = scaler.fit_transform(data[["RSSI_AP1", "RSSI_AP2", "RSSI_AP3"]])
 
@@ -31,7 +31,7 @@ y = data[["X", "Y"]].values
 
 def distance(x,y):
     # return np.sqrt(np.sum((x-y)**2))
-    return np.sum(np.abs(x - y))    # Use Manhatten distance more helpful with outliers
+    return np.sum(np.abs(x - y))    # Use Manhatten distance more helpful with outliers and a grid like environment
 
 
 
@@ -77,11 +77,16 @@ class KNN_RSSI:
     
 
     def error_print(self, errors):
-        print(f"----------K={self.k}----------")
+        print(f"    ----------K={self.k}----------")
+
+        #multiply by 0.2921 to get meters from 11.5 inches
         print(f"Mean error:{np.mean(errors)*0.2921} m")
         print(f"Median error:{np.median(errors)*0.2921} m")
         print(f"80% Percentile: {np.percentile(errors, 80)*0.2921} m")
         print(f"Maximum erorrs: {np.max(errors)*0.2921} m")
+
+        return np.mean(errors)*0.2921, np.median(errors)*0.2921
+
 
     def visualize_neighbors(self, x_train, y_train, x_test, y_test):
 
@@ -128,33 +133,102 @@ class KNN_RSSI:
 
 
 
+def plot_error(prediction, y_test, k):
+    # ERROR VECTOR (PLOT AROUND ZERO)
+    error_vectors = prediction - y_test   # (N, 2) array
+
+    plt.figure(figsize=(6,6))
+    plt.scatter(error_vectors[:,0], error_vectors[:,1], alpha=0.7)
+
+    plt.axhline(0, color='black', linewidth=1)
+    plt.axvline(0, color='black', linewidth=1)
+
+    plt.xlabel("Error in X (tiles)")
+    plt.ylabel("Error in Y (tiles)")
+    plt.title(f"Localization Error Distribution Around Zero (K = {k})")
+    plt.grid(True)
+    plt.gca().set_aspect('equal', 'box')
+    plt.show()
+
 
 if __name__ == "__main__":
+
+    k_3 = 3
+    k_5 = 5
+    k_7 = 7
 
     # split current dataset into training and test (Record new values for test?)
     x_train, x_test, y_train, y_test = train_test_split(x,y, test_size = 0.10, random_state=2)
 
-    knn = KNN_RSSI(7)
-    knn.fit(x_train, y_train)
-    prediction = knn.prediction(x_test)
-    errors = np.sqrt(np.sum((prediction - y_test)**2, axis=1))
+    # ------------------------------ k = 3 ------------------------------
+    knn_3 = KNN_RSSI(k_3)
+    knn_3.fit(x_train, y_train)
+    prediction_3 = knn_3.prediction(x_test)
 
-    #multiply by 0.2921 to get meters from 11.5 inches
+    # mean square error
+    errors_3 = np.sqrt(np.sum((prediction_3 - y_test)**2, axis=1))
 
-    knn.error_print(errors)
+    #plot_error(prediction_3, y_test, k_3)
+
+    # ------------------------------ k = 5 ------------------------------
+    knn_5 = KNN_RSSI(k_5)
+    knn_5.fit(x_train, y_train)
+    prediction_5 = knn_5.prediction(x_test)
+
+    # mean square error
+    errors_5 = np.sqrt(np.sum((prediction_5 - y_test)**2, axis=1))
+
+    #plot_error(prediction_5, y_test, k_5)
 
 
-    #visualize predicted and actual
-    plt.figure(figsize = (6,6))
-    plt.title("Actual vs Predicted Coordinated (K=7)")
-    plt.scatter(y_test[:,0], y_test[:,1], label = "Actual", alpha = 0.8)
-    plt.scatter(prediction[:,0], prediction[:,1], label = "Predicted", alpha = 0.8)
-    plt.xlabel("X Coord")
-    plt.ylabel("Y Coord")
-    plt.legend()
+    # ------------------------------ k = 7 ------------------------------
+    knn_7 = KNN_RSSI(k_7)
+    knn_7.fit(x_train, y_train)
+    prediction_7 = knn_7.prediction(x_test)
+
+    # mean square error
+    errors_7 = np.sqrt(np.sum((prediction_7 - y_test)**2, axis=1))
+
+    #plot_error(prediction_7, y_test, k_7)
+
+
+
+    mean_3, median_3 = knn_3.error_print(errors_3)
+    mean_5, median_5 = knn_5.error_print(errors_5)
+    mean_7, median_7 = knn_7.error_print(errors_7)
+
+    x_axis = [1,3,5]
+    average = [mean_3, mean_5, mean_7]
+    median = [median_3, median_5, median_7]
+
+    colors = ["red", "green", "blue"]  
+
+    plt.figure(figsize=(8,6))
+    for k, val, c in zip(x_axis, average, colors):
+        plt.scatter(k, val, color=c, s=80, label=f"K = {k}")
+
+    plt.plot(x_axis, average, color="black", linewidth=1)
+    plt.title("Mean Error vs K Value")
+    plt.xlabel("K value")
+    plt.ylabel("Mean Error (m)")
     plt.grid(True)
+    plt.legend()
     plt.show()
 
-    # knn.visualize_neighbors(x_train, y_train, x_test, y_test)
+    plt.figure(figsize=(8,6))
+    for k, val, c in zip(x_axis, median, colors):
+        plt.scatter(k, val, color=c, s=80, label=f"K = {k}")
+
+    plt.plot(x_axis, median, color="black", linewidth=1)  # optional connecting line
+
+    plt.title("Median Error vs K Value")
+    plt.xlabel("K value")
+    plt.ylabel("Median Error (m)")
+    plt.grid(True)
+    plt.legend()
+    plt.show()
+
+
+    #knn.visualize_neighbors(x_train, y_train, x_test, y_test)
 
 
