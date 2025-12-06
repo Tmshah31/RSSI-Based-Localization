@@ -13,4 +13,5 @@ else
     sudo iw dev "$INTERFACE" set channel $CHANNEL
 fi
 
-sudo /home/tmshah/RSSI_Localization/RSSI-Based-Localization/rssi_env/bin/python /home/tmshah/RSSI_Localization/RSSI-Based-Localization/scripts/RSSIgather_mutliple.py
+#change name based on the number of APs being used (single or multiple)
+sudo /home/tmshah/RSSI_Localization/RSSI-Based-Localization/rssi_env/bin/python /home/tmshah/RSSI_Localization/RSSI-Based-Localization/scripts/RSSIgather_multiple.py
