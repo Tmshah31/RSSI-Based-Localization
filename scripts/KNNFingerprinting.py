@@ -17,7 +17,7 @@ data["RSSI_AP2"] = pd.to_numeric(data["RSSI_AP2"], errors="coerce")
 data["RSSI_AP3"] = pd.to_numeric(data["RSSI_AP3"], errors="coerce")
 
 
-# classify X -> parameters
+# classify X -> Features
 # z-score normalize all RSSI values so every AP can be used
 scaler = StandardScaler()
 x = scaler.fit_transform(data[["RSSI_AP1", "RSSI_AP2", "RSSI_AP3"]])
@@ -31,7 +31,7 @@ y = data[["X", "Y"]].values
 
 def distance(x,y):
     # return np.sqrt(np.sum((x-y)**2))
-    return np.sum(np.abs(x - y))    # Use Manhatten distance more helpful with outliers and a grid like environment
+    return np.sum(np.abs(x - y))    # Use Manhatten distance more helpful with outliers in a grid like environment
 
 
 
@@ -79,7 +79,7 @@ class KNN_RSSI:
     def error_print(self, errors):
         print(f"    ----------K={self.k}----------")
 
-        #multiply by 0.2921 to get meters from 11.5 inches
+        #multiply by 0.2921 to get meters from tiles (11.5 x 11.5 in tiles)
         print(f"Mean error:{np.mean(errors)*0.2921} m")
         print(f"Median error:{np.median(errors)*0.2921} m")
         print(f"80% Percentile: {np.percentile(errors, 80)*0.2921} m")
@@ -197,7 +197,10 @@ if __name__ == "__main__":
     mean_5, median_5 = knn_5.error_print(errors_5)
     mean_7, median_7 = knn_7.error_print(errors_7)
 
-    x_axis = [1,3,5]
+
+    # ------- Plots the mean and median error between a K = 3, K = 5, K = 7 ----------
+
+    x_axis = [3,5,7]
     average = [mean_3, mean_5, mean_7]
     median = [median_3, median_5, median_7]
 

@@ -26,7 +26,7 @@ AP3 = (-19, 0)
 
 plt.figure(figsize=(9, 7))
 
-# Plot all measured points (EVERY SINGLE ONE)
+# Plot all measured points
 plt.scatter(data["X"], data["Y"], s=18, color="blue", alpha=0.7, label="Measurement Points")
 
 # Plot APs
