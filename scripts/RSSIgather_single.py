@@ -14,7 +14,7 @@ BeaconCount = {
     "ESP_Beacon_one" : 0 ,
     "ESP_Beacon_two" : 0,
     "ESP_Beacon_three" : 0}
-wlan = "wlx00c0cab9a65f"
+wlan = "wlan1"
 
 
 #which esp will be tested
@@ -35,7 +35,7 @@ def write_dataset(AP):
 
     timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
 
-    csv_name = Path("/home/tmshah") / "RSSI_Localization" / "RSSI-Based-Localization" / "data" / f"{APs[AP]}_{timestamp}_dataset.csv"
+    csv_name = Path("/home/cyber-pi/Desktop") / "RSSI-Based-Localization" / "data" / f"{APs[AP]}_{timestamp}_dataset.csv"
 
     csvfile = open(csv_name, 'w', newline='')
 
