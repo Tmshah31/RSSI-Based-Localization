@@ -35,20 +35,26 @@ class RSSI:
 
     def process_packet(self, packet):
         if(packet.haslayer(Dot11Beacon) and packet.haslayer(RadioTap)):
-            bssid = packet[DOT11Beacon].addr2
+            bssid = packet.getlayer(Dot11).addr2
 
-            if bssid in self.listOfAp:
+            
+
+            if bssid.upper() in self.BeaconCount:
+
                 sig_strength = packet[RadioTap].dBm_AntSignal
 
                 sig_linear = 10**(sig_strength/10)
-                self.SigStrength[bssid].append(sig_linear) #don't forget to clear the list  
+                self.SigStrength[bssid.upper()].append(sig_linear) #don't forget to clear the list  
 
-                self.BeaconCount[bssid] += 1 #don't forget to reset to zero
+                self.BeaconCount[bssid.upper()] += 1 #don't forget to reset to zero
 
+        
 
     def stop_sniff(self, packet):
         return all(count == self.beaconNumber for count in self.BeaconCount.values())
     
+
+    #call after a sniff has been performed at a given location
     def clear_dictionaries(self):
 
         for value in self.SigStrength.values():
@@ -94,6 +100,14 @@ if __name__ == "__main__":
 
     print(collector.BeaconCount)
     print(collector.SigStrength)
+
+
+    sniff(iface=cards[selected], prn=collector.process_packet, store=0, filter="type mgt subtype beacon", stop_filter = collector.stop_sniff)
+
+    print(collector.SigStrength)
+
+
+    exit()
 
 
 
