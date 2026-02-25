@@ -77,6 +77,7 @@ class RSSI:
 
             for value in self.beacon_count:
                 self.beacon_count[value] = 0
+                
 
         return
 
