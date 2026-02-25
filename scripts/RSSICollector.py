@@ -18,19 +18,19 @@ class RSSI:
         self.beaconNumber = beaconNumber
         self.BeaconCount = {}
         self.SigStrength = {}
+        self.AverageSignalStrength = {}
         self.Wlan = Wlan
-        self.listOfAp = []
+        
 
     def load_file(self):
         with open(self.filename, 'r') as f:
             for line in f: 
                 key = line.strip()
 
-                self.listOfAp.append(key)
-
                 if key:
                     self.BeaconCount[key] = 0
                     self.SigStrength[key] = []
+                    self.AverageSignalStrength[key] = 0 #this is the final values after averaging and convering to dB
 
 
     def process_packet(self, packet):
@@ -62,6 +62,20 @@ class RSSI:
 
         for value in self.BeaconCount:
             self.BeaconCount[value] = 0
+
+        return
+
+
+    def average_values(self):
+
+        for i in self.BeaconCount:
+            total = sum(self.SigStrength[i])
+            avg = total/len(self.SigStrength[i])
+
+            self.AverageSignalStrength[i] = 10 * np.log10(avg)
+
+        return 
+            
 
 
 
@@ -104,7 +118,7 @@ if __name__ == "__main__":
 
     sniff(iface=cards[selected], prn=collector.process_packet, store=0, filter="type mgt subtype beacon", stop_filter = collector.stop_sniff)
 
-    print(collector.SigStrength)
+    print(collector.AverageSignalStrength)
 
 
     exit()
