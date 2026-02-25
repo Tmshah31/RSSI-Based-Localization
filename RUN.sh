@@ -1,6 +1,6 @@
 #!/bin/bash
 
-INTERFACE="wlan1"
+INTERFACE="wlx00c0cab9a65f"
 CHANNEL=1
 
 if iwconfig "$INTERFACE" | grep -q "Mode:Monitor"; then
@@ -14,4 +14,4 @@ else
 fi
 
 #change name based on the number of APs being used (single or multiple)
-sudo ~/Desktop/RSSI-Based-Localization/rssi_env/bin/python ~/Desktop/RSSI-Based-Localization/scripts/RSSIgather_single.py
+#sudo ~/Desktop/RSSI-Based-Localization/rssi_env/bin/python ~/Desktop/RSSI-Based-Localization/scripts/RSSIgather_single.py

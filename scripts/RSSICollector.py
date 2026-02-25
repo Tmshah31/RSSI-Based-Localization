@@ -72,7 +72,7 @@ class RSSI:
             total = sum(self.SigStrength[i])
             avg = total/len(self.SigStrength[i])
 
-            self.AverageSignalStrength[i] = 10 * np.log10(avg)
+            self.AverageSignalStrength[i] = float(10 * np.log10(avg))
 
         return 
             
@@ -97,6 +97,8 @@ def list_all_net_interfaces():
 
 if __name__ == "__main__":
 
+    modes = ["Manual", "Auto (GNSS)"]
+
 
     cards = list_all_net_interfaces()
 
@@ -107,6 +109,12 @@ if __name__ == "__main__":
 
     print(f"{cards[selected]} has been chosen for sniff")
 
+    print("Please select a Mode for operation: ")
+    for i in range(len(modes)): 
+        print(f"{i} : {modes[i]}")
+
+    selected_mode = int(input("Mode: "))
+
 
     collector = RSSI("/home/tmshah/Desktop/RSSI-Based-Localization/MAC.txt", cards[selected], 5)
 
@@ -115,13 +123,38 @@ if __name__ == "__main__":
     print(collector.BeaconCount)
     print(collector.SigStrength)
 
+    #Manual Mode
+    if modes[selected_mode] == modes[0]:
+        print("entered")
+        while(True):
+            key = keyboard.read_event(suppress=True)
+            if key.event_type == keyboard.KEY_DOWN:
+                if key.name == "up":
+                    collector.Y += 1
+                    print(f"Y: {collector.Y}")
+                if key.name == "down":
+                    collector.Y -= 1
+                    print(f"Y: {collector.Y}")
+                if key.name == "right":
+                    collector.X += 1
+                    print(f"X: {collector.X}")
+                if key.name == "left":
+                    collector.X -= 1
+                    print(f"X: {collector.X}")
+                if key.name == "enter":
 
-    sniff(iface=cards[selected], prn=collector.process_packet, store=0, filter="type mgt subtype beacon", stop_filter = collector.stop_sniff)
+                    #clears the dictionaries from last run
+                    collector.clear_dictionaries()
 
-    print(collector.AverageSignalStrength)
+                    sniff(iface=cards[selected], prn=collector.process_packet, store=0, filter="type mgt subtype beacon", stop_filter = collector.stop_sniff)
 
+                    collector.average_values()
 
-    exit()
+                    print(collector.AverageSignalStrength)
+
+                if key.name == 'esc':
+
+                    exit()
 
 
 
