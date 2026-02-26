@@ -52,7 +52,7 @@ if __name__ == "__main__":
 
     #Manual Mode
     if modes[selected_mode] == modes[0]:
-        print("entered")
+        
         while(True):
             key = keyboard.read_event(suppress=True)
             if key.event_type == keyboard.KEY_DOWN:
@@ -70,9 +70,7 @@ if __name__ == "__main__":
                     print(f"X: {collector.X}")
                 if key.name == "enter":
 
-                    collector.average_values()
-
-                    print(collector.average_signal_strength)
+                    collector.start_thread()
 
                 if key.name == 'esc':
 

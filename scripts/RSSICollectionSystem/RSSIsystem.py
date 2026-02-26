@@ -88,12 +88,14 @@ class RSSI:
 
             for i in self.beacon_count:
                 if len(self.sig_strength[i]) <= 0:
-                    self.average_signal_strength = None
+                    self.average_signal_strength[i] = None
+                    return
                 total = sum(self.sig_strength[i])
                 avg = total/len(self.sig_strength[i])
 
                 self.average_signal_strength[i] = float(10 * np.log10(avg))
-
+                
+        print(self.average_signal_strength)
         return 
     
     def start_sniff(self):
@@ -101,7 +103,8 @@ class RSSI:
         #clears the dictionaries from last run
         self.clear_dictionaries()
         sniff(iface=self.Wlan, prn=self.process_packet, store=0, filter="type mgt subtype beacon", stop_filter = self.stop_sniff, timeout = 5)
-
+        
+        self.average_values()
 
 
     def start_thread(self):
@@ -111,7 +114,7 @@ class RSSI:
 
     def Monitor_Mode(self):
 
-        result = subprocess.getoutput(["iwconfig", self.Wlan], text=True)
+        result = subprocess.getoutput(["iwconfig", self.Wlan])
 
         if "Mode:Monitor" in result:
             print(f"{self.Wlan} is in Monitor Mode")
@@ -125,7 +128,7 @@ class RSSI:
             subprocess.run(["sudo", "ip", "link", "set", self.Wlan, "up"])
             time.sleep(1)
 
-            result = subprocess.getoutput(["iwconfig", self.Wlan]).decode('utf-8')
+            result = subprocess.getoutput(["iwconfig", self.Wlan])
             if "Mode:Monitor" in result:
                 print(f"{self.Wlan} is in Monitor Mode")
                 return
