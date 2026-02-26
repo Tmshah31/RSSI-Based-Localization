@@ -16,6 +16,10 @@ from rich.table import Table
 from rich.panel import Panel
 from rich.text import Text
 from rich.live import Live
+from rich.progress import track
+
+
+console = Console()
 
 
 class RSSI:
@@ -124,23 +128,35 @@ class RSSI:
         result = subprocess.getoutput(["iwconfig", self.Wlan])
 
         if "Mode:Monitor" in result:
-            print(f"{self.Wlan} is in Monitor Mode")
+            rprint(Panel(f"{self.Wlan} is in Monitor Mode"))
             return
-        else:
-            print(f"{self.Wlan} is NOT in Monitor Mode")
-            subprocess.run(["sudo", "ip", "link", "set", self.Wlan, "down"])
-            time.sleep(1)
-            subprocess.run(["sudo", "iw", "dev", self.Wlan, "set", "type", "monitor"])
-            time.sleep(1)
-            subprocess.run(["sudo", "ip", "link", "set", self.Wlan, "up"])
+        
+
+        tasks = [
+            (["sudo", "ip", "link", "set", self.Wlan, "down"]),
+            (["sudo", "iw", "dev", self.Wlan, "set", "type", "monitor"]),
+            (["sudo", "ip", "link", "set", self.Wlan, "up"])
+        ]
+        
+        rprint(Panel(f"{self.Wlan} is NOT in Monitor Mode"))
+        for command in track(tasks, description="Configuring Interface"):
+            subprocess.run(command, capture_output=True)
             time.sleep(1)
 
-            result = subprocess.getoutput(["iwconfig", self.Wlan])
-            if "Mode:Monitor" in result:
-                print(f"{self.Wlan} is in Monitor Mode")
-                return
+        result = subprocess.getoutput(["iwconfig", self.Wlan])
+        if "Mode:Monitor" in result:
+            rprint(Panel(f"{self.Wlan} is in Monitor Mode\nPress Enter to Continue..."))
+            while True:
+                event = keyboard.read_event(suppress=True)
+                if event.name == "enter":
+                    console.clear()
+                    return
+                else:
+                    rprint("Key Not Recognized...")
             
         return 
+    
+    
 
 
 

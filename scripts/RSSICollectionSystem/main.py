@@ -8,7 +8,6 @@ def list_all_net_interfaces():
     interfaces = psutil.net_if_addrs()
     cards = []
 
-    print("Available Network Cards:")
     for interface_name in interfaces:
         cards.append(interface_name)
 
@@ -24,9 +23,11 @@ def create_menu(options, selected, menu_title):
         text = Text()
         for i, opt in enumerate(options):
             if i == selected:
-                text.append(f">{opt}\n", style="bold magenta")
+                text.append(f">{opt}\n", style="bold green")
             else:
                 text.append(f" {opt}\n")
+
+        text.append("\nESC to exit Enter to Proceed", style= "bold magenta")
 
         return Panel(text, title=menu_title)
     
@@ -42,6 +43,8 @@ def create_menu(options, selected, menu_title):
                 selected = (selected + 1) % len(options)
             elif event.name == "enter":
                 break
+            elif event.name == "esc":
+                exit()
 
             live.update(render(options, selected, menu_title))
 
@@ -52,18 +55,13 @@ def create_menu(options, selected, menu_title):
 
 if __name__ == "__main__":
 
+    #Available Modes
     modes = ["Manual", "Auto (GNSS)"]
     selected_mode = 0
 
+    #Scan cards and create a menu
     cards = list_all_net_interfaces()
     selected_card = 0
-
-    # for i in range(len(cards)):
-    #     print(f"{i}:{cards[i]}")
-
-    # selected = int(input("Select the card for WIFI sniff:"))
-
-    # print(f"{cards[selected]} has been chosen for sniff")
 
     selected_card = create_menu(cards, selected_card, "WLAN CARD SELECTION")
 
