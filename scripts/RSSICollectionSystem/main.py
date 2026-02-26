@@ -1,22 +1,5 @@
-from RSSIsystem import RSSI
-from scapy.all import sniff, Dot11Beacon, RadioTap, Dot11
-import os
-import time
-import keyboard
-import numpy as np
-import csv
-from pathlib import Path
-from datetime import datetime
-import psutil
-import threading
-import subprocess
-from rich_menu import Menu
-from rich import print as rprint 
-from rich.console import Console
-from rich.table import Table
-from rich.panel import Panel
-from rich.text import Text
-from rich.live import Live
+from RSSIsystem import *
+
 
 
 
@@ -34,10 +17,10 @@ def list_all_net_interfaces():
 
 
 
-def create_menu(options, selected):
+def create_menu(options, selected, menu_title):
     
 
-    def render(options,selected):
+    def render(options,selected, menu_title):
         text = Text()
         for i, opt in enumerate(options):
             if i == selected:
@@ -45,11 +28,11 @@ def create_menu(options, selected):
             else:
                 text.append(f" {opt}\n")
 
-        return Panel(text, title="Select WLAN Card")
+        return Panel(text, title=menu_title)
     
-    with Live(render(options, selected), refresh_per_second=10, screen=True) as live:
+    with Live(render(options, selected, menu_title), refresh_per_second=10, screen=True) as live:
         while True:
-            event = keyboard.read_event()
+            event = keyboard.read_event(suppress=True)
             if event.event_type != "down":
                 continue
 
@@ -60,9 +43,9 @@ def create_menu(options, selected):
             elif event.name == "enter":
                 break
 
-            live.update(render(options, selected))
+            live.update(render(options, selected, menu_title))
 
-        rprint(f"Selected Card: {options[selected]}")  
+        rprint(f"{menu_title}: {options[selected]}")  
 
         return selected  
 
@@ -70,6 +53,7 @@ def create_menu(options, selected):
 if __name__ == "__main__":
 
     modes = ["Manual", "Auto (GNSS)"]
+    selected_mode = 0
 
     cards = list_all_net_interfaces()
     selected_card = 0
@@ -81,7 +65,7 @@ if __name__ == "__main__":
 
     # print(f"{cards[selected]} has been chosen for sniff")
 
-    selected_card = create_menu(cards, selected_card)
+    selected_card = create_menu(cards, selected_card, "WLAN CARD SELECTION")
 
 
     collector = RSSI("/home/tshah/Desktop/RSSI-Based-Localization/MAC.txt", cards[selected_card], 5)
@@ -89,11 +73,7 @@ if __name__ == "__main__":
 
     collector.Monitor_Mode()
 
-    print("Please select a Mode for operation: ")
-    for i in range(len(modes)): 
-        print(f"{i} : {modes[i]}")
-
-    selected_mode = int(input("Mode: "))
+    selected_mode = create_menu(modes, selected_mode, "MODE SELECTION" )
     
     
 
