@@ -50,6 +50,8 @@ def create_menu(options, selected, menu_title):
 
         rprint(f"{menu_title}: {options[selected]}")  
 
+        console.clear()
+
         return selected  
 
 
@@ -77,22 +79,24 @@ if __name__ == "__main__":
 
     #Manual Mode
     if modes[selected_mode] == modes[0]:
+
+
         
         while(True):
-            key = keyboard.read_event(suppress=True)
+            key = keyboard.read_event()
             if key.event_type == keyboard.KEY_DOWN:
                 if key.name == "up":
                     collector.Y += 1
-                    print(f"Y: {collector.Y}")
+                    console.print(f"Y: {collector.Y}")
                 if key.name == "down":
                     collector.Y -= 1
-                    print(f"Y: {collector.Y}")
+                    console.print(f"Y: {collector.Y}")
                 if key.name == "right":
                     collector.X += 1
-                    print(f"X: {collector.X}")
+                    console.print(f"X: {collector.X}")
                 if key.name == "left":
                     collector.X -= 1
-                    print(f"X: {collector.X}")
+                    console.print(f"X: {collector.X}")
                 if key.name == "enter":
 
                     collector.start_thread()

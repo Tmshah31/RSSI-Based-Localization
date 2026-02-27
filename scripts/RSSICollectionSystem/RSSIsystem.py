@@ -113,7 +113,7 @@ class RSSI:
 
         #clears the dictionaries from last run
         self.clear_dictionaries()
-        sniff(iface=self.Wlan, prn=self.process_packet, store=0, filter="type mgt subtype beacon", stop_filter = self.stop_sniff, timeout = 5)
+        sniff(iface=self.Wlan, prn=self.process_packet, store=0, filter="wlan[0] & 0xfc == 0x80", stop_filter = self.stop_sniff, timeout = 5)
         
         self.average_values()
 
@@ -127,9 +127,17 @@ class RSSI:
 
         result = subprocess.getoutput(["iwconfig", self.Wlan])
 
+        time.sleep(1)
+
         if "Mode:Monitor" in result:
-            rprint(Panel(f"{self.Wlan} is in Monitor Mode"))
-            return
+            rprint(Panel(f"{self.Wlan} is in Monitor Mode\nPress Enter to Continue..."))
+            while True:
+                event = keyboard.read_event(suppress=True)
+                if event.name == "enter":
+                    console.clear()
+                    return
+                else:
+                    rprint("Key Not Recognized...")
         
 
         tasks = [
