@@ -15,9 +15,10 @@ from rich.table import Table
 from rich.panel import Panel
 from rich.text import Text
 from rich.live import Live
-from rich.progress import track
+from rich.progress import track, Progress, TextColumn, BarColumn, TimeRemainingColumn
 from rich.layout import Layout
 from rich.align import Align
+
 
 console = Console()
 
@@ -123,6 +124,7 @@ class RSSI:
         self.thread.start()
 
 
+
     def Monitor_Mode(self):
 
         result = subprocess.getoutput(["iwconfig", self.Wlan])
@@ -158,7 +160,11 @@ class RSSI:
                 event = keyboard.read_event(suppress=True)
                 if event.name == "enter":
                     console.clear()
+                    time.sleep(2)
                     return
+                elif event.name == "esc":
+                    console.clear()
+                    exit() 
                 else:
                     rprint("Key Not Recognized...")
             

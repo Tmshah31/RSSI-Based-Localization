@@ -82,7 +82,7 @@ def create_header(options):
     text.append(" | ")
     text.append(f"Mode: {options[1]}", style="italic bold magenta")
 
-    return Align.center(Panel.fit(Align.center(text), title="Systems Settings"))
+    return Panel(Align.center(text), title="Systems Settings")
 
 
 def create_footer():
@@ -94,7 +94,7 @@ def create_footer():
     text.append(" | ")
     text.append(f"Quit: Esc")
 
-    return Align.center(Panel.fit(Align.center(text), title="Function Keys"))
+    return Panel(Align.center(text), title="Function Keys")
 
 def create_coords(x,y):
     distance = round(np.sqrt(x**2 + y**2))
@@ -118,8 +118,21 @@ def RSSI_table(rssi_dict):
     for key, value in rssi_dict.items():
         rssi_table.add_row(key, str(value))
 
-    return Panel(rssi_table)
+    return Panel(Align.center(rssi_table), title="RSSI Value")
 
+def collecting_RSSI():
+    
+    text = Text()
+    text.append(f"Collecting RSSI Value...")
+
+    return Panel(text, title="RSSI Values")
+
+
+def test_func():
+    rprint("Thread Started")
+    time.sleep(5)
+    rprint("Thread Finished")
+    
 if __name__ == "__main__":
 
     #Available Modes
@@ -133,7 +146,7 @@ if __name__ == "__main__":
     selected_card = create_menu(cards, selected_card, "WLAN CARD SELECTION")
 
 
-    collector = RSSI("/home/tmshah/Desktop/RSSI-Based-Localization/MAC.txt", cards[selected_card], 5)
+    collector = RSSI("/home/tshah/Desktop/RSSI-Based-Localization/MAC.txt", cards[selected_card], 5)
     collector.load_file()
 
     collector.Monitor_Mode()
@@ -186,11 +199,27 @@ if __name__ == "__main__":
                     if key.name == "enter":
 
                         collector.start_thread()
+                        
 
+
+                        #Update the panel with rssi using a different layout:
+                        while collector.thread.is_alive():
+
+
+                            layout["header"].update(create_header(options))
+                            layout["coords"].update(create_coords(collector.X, collector.Y))
+                            layout["RSSI"].update(collecting_RSSI())
+                            layout["footer"].update(create_footer())
+
+                        
+                        
                         layout["header"].update(create_header(options))
                         layout["coords"].update(create_coords(collector.X, collector.Y))
                         layout["RSSI"].update(RSSI_table(collector.average_signal_strength))
                         layout["footer"].update(create_footer())
+
+
+                        
 
                     if key.name == 'esc':
 
