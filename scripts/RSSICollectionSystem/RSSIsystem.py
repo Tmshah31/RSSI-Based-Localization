@@ -15,7 +15,7 @@ from rich.table import Table
 from rich.panel import Panel
 from rich.text import Text
 from rich.live import Live
-from rich.progress import track, Progress, TextColumn, BarColumn, TimeRemainingColumn
+from rich.progress import track, Progress, TextColumn, BarColumn, TimeRemainingColumn, SpinnerColumn
 from rich.layout import Layout
 from rich.align import Align
 
@@ -114,7 +114,7 @@ class RSSI:
 
         #clears the dictionaries from last run
         self.clear_dictionaries()
-        sniff(iface=self.Wlan, prn=self.process_packet, store=0, filter="wlan[0] & 0xfc == 0x80", stop_filter = self.stop_sniff, timeout = 5)
+        sniff(iface=self.Wlan, prn=self.process_packet, store=0, timeout = 5)
         
         self.average_values()
 
@@ -138,6 +138,9 @@ class RSSI:
                 if event.name == "enter":
                     console.clear()
                     return
+                elif event.name == "esc":
+                    console.clear()
+                    exit()
                 else:
                     rprint("Key Not Recognized...")
         
@@ -147,6 +150,8 @@ class RSSI:
             (["sudo", "iw", "dev", self.Wlan, "set", "type", "monitor"]),
             (["sudo", "ip", "link", "set", self.Wlan, "up"])
         ]
+
+        
         
         rprint(Panel(f"{self.Wlan} is NOT in Monitor Mode"))
         for command in track(tasks, description="Configuring Interface"):
@@ -160,7 +165,6 @@ class RSSI:
                 event = keyboard.read_event(suppress=True)
                 if event.name == "enter":
                     console.clear()
-                    time.sleep(2)
                     return
                 elif event.name == "esc":
                     console.clear()

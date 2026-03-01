@@ -82,7 +82,7 @@ def create_header(options):
     text.append(" | ")
     text.append(f"Mode: {options[1]}", style="italic bold magenta")
 
-    return Panel(Align.center(text), title="Systems Settings")
+    return Align.center(Panel.fit(Align.center(text), title="Systems Settings"))
 
 
 def create_footer():
@@ -128,10 +128,6 @@ def collecting_RSSI():
     return Panel(text, title="RSSI Values")
 
 
-def test_func():
-    rprint("Thread Started")
-    time.sleep(5)
-    rprint("Thread Finished")
     
 if __name__ == "__main__":
 
@@ -146,7 +142,7 @@ if __name__ == "__main__":
     selected_card = create_menu(cards, selected_card, "WLAN CARD SELECTION")
 
 
-    collector = RSSI("/home/tshah/Desktop/RSSI-Based-Localization/MAC.txt", cards[selected_card], 5)
+    collector = RSSI("/home/tmshah/Desktop/RSSI-Based-Localization/MAC.txt", cards[selected_card], 5)
     collector.load_file()
 
     collector.Monitor_Mode()
@@ -200,16 +196,27 @@ if __name__ == "__main__":
 
                         collector.start_thread()
                         
-
+                        progress = Progress(
+                            SpinnerColumn(),
+                            TextColumn("[progress.description]{task.description}"),
+                            BarColumn(),
+                            TextColumn("[progress.percentage]{task.percentage:>3.0f}%"),
+                        )
 
                         #Update the panel with rssi using a different layout:
+                        
+                        task = progress.add_task("Collecting RSSI Values", total = 6)
                         while collector.thread.is_alive():
 
 
+        
                             layout["header"].update(create_header(options))
                             layout["coords"].update(create_coords(collector.X, collector.Y))
-                            layout["RSSI"].update(collecting_RSSI())
+                            progress.update(task, advance=1)
+                            layout["RSSI"].update(Panel(progress, title="RSSI Values being collected"))
                             layout["footer"].update(create_footer())
+
+                            time.sleep(1)
 
                         
                         
