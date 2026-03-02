@@ -142,7 +142,7 @@ if __name__ == "__main__":
     selected_card = create_menu(cards, selected_card, "WLAN CARD SELECTION")
 
 
-    collector = RSSI("/home/cyber-pi/Desktop/RSSI-Based-Localization/MAC.txt", cards[selected_card], 5)
+    collector = RSSI("/home/tmshah/Desktop/RSSI-Based-Localization/MAC.txt", cards[selected_card], 5)
     collector.load_file()
 
     collector.Monitor_Mode()
