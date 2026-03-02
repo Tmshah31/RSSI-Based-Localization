@@ -114,7 +114,7 @@ class RSSI:
 
         #clears the dictionaries from last run
         self.clear_dictionaries()
-        sniff(iface=self.Wlan, prn=self.process_packet, store=0, timeout = 5, filter="wlan type mgt subtype beacon", monitor=True)
+        sniff(iface=self.Wlan, prn=self.process_packet, store=0, timeout = 5, filter="type mgt subtype beacon", monitor=True)
         
         self.average_values()
 
