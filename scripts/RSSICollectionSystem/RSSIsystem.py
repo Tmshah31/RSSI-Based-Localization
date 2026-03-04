@@ -57,7 +57,7 @@ class RSSI:
 
 
     def process_packet(self, packet):
-        if(packet.haslayer(RadioTap)):
+        if(packet.haslayer(RadioTap) and packet.haslayer(Dot11Beacon)):
             bssid = packet.getlayer(Dot11).addr2
 
             
