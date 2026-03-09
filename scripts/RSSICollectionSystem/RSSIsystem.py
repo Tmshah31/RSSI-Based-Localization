@@ -1,4 +1,4 @@
-from scapy.all import Dot11Beacon, RadioTap, Dot11
+from scapy.all import sniff, Dot11Beacon, RadioTap, Dot11
 import os
 import time
 import keyboard
@@ -111,8 +111,6 @@ class RSSI:
         return 
     
     def start_sniff(self):
-
-        from scapy.all import sniff
 
         #clears the dictionaries from last run
         self.clear_dictionaries()
