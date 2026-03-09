@@ -147,7 +147,7 @@ class RSSI:
         kill_task = [['sudo', 'airmon-ng', 'check', 'kill']]
 
         rprint(Panel(f"{self.Wlan} is NOT in Monitor Mode"))
-        for command in track(tasks, description="[red]Killing Interfering Processes..."):
+        for command in track(kill_task, description="[red]Killing Interfering Processes..."):
             subprocess.run(command, capture_output=True)
             time.sleep(1)
 
