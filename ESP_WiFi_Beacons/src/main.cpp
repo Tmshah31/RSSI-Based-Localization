@@ -12,7 +12,7 @@ void setup() {
 
   // Start the ESP32 in Access Point mode
   WiFi.mode(WIFI_AP);
-  bool result = WiFi.softAP(ssid, password, 6); // start the AP on channel 1 no channel hoppin
+  bool result = WiFi.softAP(ssid, password, 4); // start the AP on channel 1 no channel hoppin
 
   if (result) {
     Serial.println("Access Point started successfully!");
