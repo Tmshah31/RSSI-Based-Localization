@@ -146,7 +146,7 @@ class RSSI:
         
 
         tasks = [
-            (['sudo', 'airmon-ng', 'check', 'kill']),
+            # (['sudo', 'airmon-ng', 'check', 'kill']),
             (["sudo", "ip", "link", "set", self.Wlan, "down"]),
             (["sudo", "iw", "dev", self.Wlan, "set", "type", "monitor"]),
             (["sudo", "ip", "link", "set", self.Wlan, "up"])
