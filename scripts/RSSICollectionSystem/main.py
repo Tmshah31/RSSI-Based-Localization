@@ -81,6 +81,8 @@ def create_header(options):
     text.append(f"WLAN Card: {options[0]}", style="italic bold green")
     text.append(" | ")
     text.append(f"Mode: {options[1]}", style="italic bold magenta")
+    text.append(" | ")
+    text.append(f"Channel: {options[2]}", style="italic bold yellow")
 
     return Align.center(Panel.fit(Align.center(text), title="Systems Settings"))
 
@@ -145,11 +147,14 @@ if __name__ == "__main__":
     collector = RSSI("/home/kali/Desktop/RSSI-Based-Localization/MAC.txt", cards[selected_card], 5)
     collector.load_file()
 
-    collector.Monitor_Mode()
+    #channel selection panel
+    channel = Panel(Prompt.ask("Please enter a channel between 1-11:", choices=['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11']))
+
+    collector.Monitor_Mode(channel)
 
     selected_mode = create_menu(modes, selected_mode, "MODE SELECTION" )
 
-    options = [cards[selected_card], modes[selected_mode]]
+    options = [cards[selected_card], modes[selected_mode], channel]
     
     
 

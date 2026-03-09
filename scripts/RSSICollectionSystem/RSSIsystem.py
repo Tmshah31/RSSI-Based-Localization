@@ -18,7 +18,7 @@ from rich.live import Live
 from rich.progress import track, Progress, TextColumn, BarColumn, TimeRemainingColumn, SpinnerColumn
 from rich.layout import Layout
 from rich.align import Align
-
+from rich.prompt import Prompt
 
 console = Console()
 
@@ -125,7 +125,7 @@ class RSSI:
 
 
 
-    def Monitor_Mode(self):
+    def Monitor_Mode(self, channel):
 
         result = subprocess.getoutput(["iwconfig", self.Wlan])
 
@@ -144,18 +144,28 @@ class RSSI:
                 else:
                     rprint("Key Not Recognized...")
         
+        kill_task = [['sudo', 'airmon-ng', 'check', 'kill']]
+
+        rprint(Panel(f"{self.Wlan} is NOT in Monitor Mode"))
+        for command in track(tasks, description="[red]Killing Interfering Processes..."):
+            subprocess.run(command, capture_output=True)
+            time.sleep(1)
+
+
 
         tasks = [
-            # (['sudo', 'airmon-ng', 'check', 'kill']),
-            (["sudo", "ip", "link", "set", self.Wlan, "down"]),
-            (["sudo", "iw", "dev", self.Wlan, "set", "type", "monitor"]),
-            (["sudo", "ip", "link", "set", self.Wlan, "up"])
+            #(['sudo', 'airmon-ng', 'check', 'kill']),
+            ["sudo", "ip", "link", "set", self.Wlan, "down"],
+            ["sudo", "iw", "dev", self.Wlan, "set", "type", "monitor"],
+            ["sudo", "ip", "link", "set", self.Wlan, "up"],
+            ["sudo", "iw", "dev", self.Wlan, "set", "power_save", "off"],
+            ["sudo", "iw", self.Wlan, "set", "channel", channel]
         ]
 
         
         
-        rprint(Panel(f"{self.Wlan} is NOT in Monitor Mode"))
-        for command in track(tasks, description="Configuring Interface"):
+        
+        for command in track(tasks, description="[green]Configuring Interface..."):
             subprocess.run(command, capture_output=True)
             time.sleep(1)
 

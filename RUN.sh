@@ -3,4 +3,4 @@
 stty -echoctl
 
 #change name based on the number of APs being used (single or multiple)
-sudo  /home/kali/Desktop/RSSI-Based-Localization/rssi_env/bin/python /home/kali/Desktop/RSSI-Based-Localization/scripts/RSSICollectionSystem/main.py
+sudo  /home/tmshah/Desktop/RSSI-Based-Localization/rssi_env/bin/python /home/tmshah/Desktop/RSSI-Based-Localization/scripts/RSSICollectionSystem/main.py
