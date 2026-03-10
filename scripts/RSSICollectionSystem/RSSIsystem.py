@@ -20,6 +20,7 @@ from rich.layout import Layout
 from rich.align import Align
 from rich.prompt import Prompt
 import sys
+import termios
 
 console = Console()
 

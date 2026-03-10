@@ -160,6 +160,8 @@ if __name__ == "__main__":
     collector.load_file()
 
     #channel selection panel
+    time.sleep(0.2)
+    termios.tcflush(sys.stdin, termios.TCIOFLUSH)
     channel = Prompt.ask("Please enter a channel between 1-11:", choices=['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11'])
     console.clear()
 
