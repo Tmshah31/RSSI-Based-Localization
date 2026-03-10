@@ -94,7 +94,7 @@ def create_footer():
     text.append(" | ")
     text.append(f"Quit: Esc")
 
-    return Panel(Align.center(text), title="Function Keys")
+    return Align.center(Panel.fit(Align.center(text), title="Function Keys"))
 
 def create_coords(x,y):
     distance = round(np.sqrt(x**2 + y**2))
@@ -249,5 +249,10 @@ if __name__ == "__main__":
                         
 
                     if key.name == 'esc':
+                        console.clear()
+                        time.sleep(1)
+                        break
 
-                        exit()
+        #run clean up process with TUI animation 
+        collector.clean_up()
+        exit()

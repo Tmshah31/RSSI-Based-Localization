@@ -1,4 +1,4 @@
-from scapy.all import sniff, Dot11Beacon, RadioTap, Dot11
+from scapy.all import sniff, Dot11Beacon, RadioTap, Dot11, conf
 import os
 import time
 import keyboard
@@ -116,6 +116,9 @@ class RSSI:
 
         #clears the dictionaries from last run
         self.clear_dictionaries()
+
+        conf.ifaces.reload()
+
         sniff(iface=self.Wlan, prn=self.process_packet, store=0, timeout = 5, filter="wlan type mgt subtype beacon", monitor=True)
         
         self.average_values()
@@ -160,7 +163,7 @@ class RSSI:
             ["sudo", "ip", "link", "set", self.Wlan, "down"],
             ["sudo", "iw", "dev", self.Wlan, "set", "type", "monitor"],
             ["sudo", "ip", "link", "set", self.Wlan, "up"],
-            ["sudo", "iw", "dev", self.Wlan, "set", "power_save", "off"],
+            ["sudo", "iw", "dev", self.Wlan, "set", "power", "off"],
             ["sudo", "iw", self.Wlan, "set", "channel", channel]
         ]
 
@@ -170,6 +173,9 @@ class RSSI:
         for command in track(tasks, description="[green]Configuring Interface..."):
             subprocess.run(command, capture_output=True)
             time.sleep(1)
+
+
+        
 
         result = subprocess.getoutput(["iwconfig", self.Wlan])
         if "Mode:Monitor" in result:
@@ -187,6 +193,33 @@ class RSSI:
             
         return 
     
+
+    def clean_up(self):
+
+        tasks_Wlan = [
+            ["sudo", "ip", "link", "set", self.Wlan, "down"],
+            ["sudo", "iw", "dev", self.Wlan, "set", "type", "managed"],
+            ["sudo", "ip", "link", "set", self.Wlan, "up"],
+        ]
+
+        Panel(rprint("Clean up process activated..."))
+
+        for command in track(tasks_Wlan, description="[purple]Exiting Monitor Mode..."):
+            subprocess.run(command, capture_output=True)
+            time.sleep(1)
+
+        tasks_NetManager = [
+            ["sudo", "systemctl", "restart", "NetworkManager"],
+            ["sudo", "systemctl", "restart", "wpa_supplicant"]
+        ]
+
+        for command in track(tasks_NetManager, description="[green]Restarting Processes..."):
+            subprocess.run(command, capture_output=True)
+            time.sleep(1)
+
+        console.clear()
+
+        return 
     
 
 
