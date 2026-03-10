@@ -48,9 +48,7 @@ def create_menu(options, selected, menu_title):
 
             live.update(render(options, selected, menu_title))
 
-        rprint(f"{menu_title}: {options[selected]}")  
-
-        console.clear()
+        
 
         return selected  
     
@@ -133,6 +131,20 @@ def collecting_RSSI():
     
 if __name__ == "__main__":
 
+    if len(sys.argv) == 2: 
+        filename = sys.argv[1]
+    elif len(sys.argv) < 2: 
+        Panel(rprint("[red] NOT Enough Arugments"))
+        exit(1)
+    
+    if(os.path.isfile(filename) == False):
+        Panel(rprint("[red]File Does Not Exist"))
+        exit(1)
+        
+
+
+    filename = sys.argv[1]
+
     #Available Modes
     modes = ["Manual", "Auto (GNSS)"]
     selected_mode = 0
@@ -144,12 +156,12 @@ if __name__ == "__main__":
     selected_card = create_menu(cards, selected_card, "WLAN CARD SELECTION")
 
 
-    collector = RSSI("/home/kali/Desktop/RSSI-Based-Localization/MAC.txt", cards[selected_card], 5)
+    collector = RSSI(filename, cards[selected_card], 5)
     collector.load_file()
 
     #channel selection panel
-    keyboard.clear_all_hotkeys()
     channel = Prompt.ask("Please enter a channel between 1-11:", choices=['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11'])
+    console.clear()
 
     collector.Monitor_Mode(channel)
 
