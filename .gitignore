@@ -4,6 +4,7 @@ rssi_env/
 # Ignore raw data and captures
 *.pcap
 captures/
+MAC.txt
 
 # Ignore Jupyter notebook checkpoints
 .ipynb_checkpoints/

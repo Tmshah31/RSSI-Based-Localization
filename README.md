@@ -75,7 +75,7 @@ RSSI-Based-Localization
 
 ## NOTES
 
-- Python environment not included. Must be created and activate for propoer functionality
+- Python environment not included. Must be created and activate for proper functionality
 - Code must be altered according to your specifications 
     - WLAN adapter
     - ESP32 model 
